@@ -1,11 +1,16 @@
 import { Component, useState, createRef, } from "react";
 import styled from "styled-components";
-import { Editor, EditorState, RichUtils, getDefaultKeyBinding, } from 'draft-js';
+import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertFromRaw, convertToRaw, } from 'draft-js';
 import 'draft-js/dist/Draft.css';
+
+
 
 
 const Container = styled.div`
     
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 
     .code-block {
       background-color: rgba(0, 0, 0, 0.05);
@@ -16,6 +21,13 @@ const Container = styled.div`
     }
 
 `;
+
+const ToolRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+`;
+
 
 const ToolContainer = styled.div`
     height: 40px;
@@ -51,6 +63,7 @@ const ToolButton = styled.span`
 `;
 
 const StyledEditor = styled.div`
+flex-grow: 1;
     /* background-color: #ddd; */
     border-top: 1px solid #eee;
     line-height: 1.5;
@@ -62,7 +75,16 @@ class RichEditor extends Component {
     super(props);
 
     this.editorRef = createRef();
-    this.state = { editorState: EditorState.createEmpty() };
+
+
+    const { onLoadHandler, id, } = this.props;
+
+    const rawContent = onLoadHandler(id);
+    const editorState = (rawContent) ? EditorState.createWithContent(convertFromRaw(rawContent)) : EditorState.createEmpty();
+
+    this.state = { editorState, };
+
+
 
     this.focus = () => this.editorRef.current.focus();
     this.onChange = (editorState) => this.setState({ editorState });
@@ -71,6 +93,28 @@ class RichEditor extends Component {
     this.mapKeyToEditorCommand = this._mapKeyToEditorCommand.bind(this);
     this.toggleBlockType = this._toggleBlockType.bind(this);
     this.toggleInlineStyle = this._toggleInlineStyle.bind(this);
+
+
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    
+    if (prevProps.id !== this.props.id) {
+
+      //儲存前一次的內容
+      if (prevState.editorState) {
+        this.props.onSaveHandler(prevProps.id, this.getExportContent(prevState.editorState.getCurrentContent()))
+      }
+
+      const { onLoadHandler, id, } = this.props;
+
+      console.log(id);
+
+      const rawContent = onLoadHandler(id);
+      const newContent = rawContent ? EditorState.createWithContent(convertFromRaw(rawContent)) : EditorState.createEmpty();
+      this.onChange(newContent);
+
+    }
   }
 
   _handleKeyCommand(command, editorState) {
@@ -115,8 +159,23 @@ class RichEditor extends Component {
     );
   }
 
+  getExportContent(content) {
+    content = content || this.state.editorState.getCurrentContent();
+    const raw = convertToRaw(content);
+    return raw;
+  }
+
+  _save() {
+    const { onSaveHandler, id, } = this.props;
+    onSaveHandler(id, this.getExportContent())
+  }
+
   render() {
+    const { onSaveHandler, onLoadHandler, content, id, } = this.props;
     const { editorState } = this.state;
+
+    // console.log(id);
+
 
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
@@ -130,14 +189,21 @@ class RichEditor extends Component {
 
     return (
       <Container className="RichEditor-root">
-        <BlockStyleControls
-          editorState={editorState}
-          onToggle={this.toggleBlockType}
-        />
-        <InlineStyleControls
-          editorState={editorState}
-          onToggle={this.toggleInlineStyle}
-        />
+        <ToolRow>
+          <BlockStyleControls
+            editorState={editorState}
+            onToggle={this.toggleBlockType}
+          />
+          <InlineStyleControls
+            editorState={editorState}
+            onToggle={this.toggleInlineStyle}
+          />
+          <ToolContainer>
+            <ToolButton className='' onMouseDown={() => this._save()}>
+              <img src={`./icons/save.svg`} />
+            </ToolButton>
+          </ToolContainer>
+        </ToolRow>
         <StyledEditor className={className} onClick={this.focus}>
           <Editor
             blockStyleFn={getBlockStyle}
@@ -149,14 +215,13 @@ class RichEditor extends Component {
             placeholder="寫些東西..."
             ref={this.editorRef}
             spellCheck={true}
+            id={this.props.id}
           />
         </StyledEditor>
       </Container>
     );
   }
 }
-
-
 
 
 const styleMap = {
@@ -188,8 +253,6 @@ class StyleButton extends Component {
   render() {
     return (
       <ToolButton className={this.props.active ? 'active' : ''} onMouseDown={this.onToggle}>
-        {/* {this.props.label} */}
-        
         {this.props.icon && <img src={`./icons/${this.props.icon}`} />}
       </ToolButton>
     );
@@ -234,10 +297,10 @@ const BlockStyleControls = (props) => {
 };
 
 const INLINE_STYLES = [
-  { label: 'Bold', style: 'BOLD' , icon: 'type-bold.svg', },
-  { label: 'Italic', style: 'ITALIC' , icon: 'type-italic.svg', },
-  { label: 'Underline', style: 'UNDERLINE', icon: 'type-underline.svg',  },
-  { label: 'Monospace', style: 'CODE' , icon: 'code.svg',},
+  { label: 'Bold', style: 'BOLD', icon: 'type-bold.svg', },
+  { label: 'Italic', style: 'ITALIC', icon: 'type-italic.svg', },
+  { label: 'Underline', style: 'UNDERLINE', icon: 'type-underline.svg', },
+  { label: 'Monospace', style: 'CODE', icon: 'code.svg', },
 ];
 
 const InlineStyleControls = (props) => {

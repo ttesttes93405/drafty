@@ -11,11 +11,19 @@ const Container = styled.div`
 `;
 
 
-function NoteEditorContainer() {
+function NoteEditorContainer(props) {
+
+  const { id, onSaveHandler, onLoadHandler, } = props;
+
+
   return (
     <Container>
-      <p>NoteEditorContainer</p>
-      <RichEditor />
+      <p>NoteEditorContainer #{id}</p>
+      <RichEditor
+        id={id}
+        onSaveHandler={onSaveHandler}
+        onLoadHandler={onLoadHandler}
+      />
     </Container>
   );
 }

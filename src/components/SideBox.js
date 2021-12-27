@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import SideNote from "./SideNote";
 
 
 const Container = styled.div`
@@ -7,12 +8,19 @@ const Container = styled.div`
 `;
 
 
-function SideBox() {
-    return (
-      <Container>
-        <p>SideBox</p>
-      </Container>
-    );
-  }
-  
-  export default SideBox;
+function SideBox(props) {
+
+  const { setIdHandler, list, } = props;
+
+
+  return (
+    <Container>
+      <p>SideBox</p>
+      {
+        list.map((el, index) => (<SideNote key={el.title} {...el} onClick={() => setIdHandler(el.id)} />))
+      }
+    </Container>
+  );
+}
+
+export default SideBox;
