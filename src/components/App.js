@@ -29,8 +29,6 @@ function App() {
     const content = JSON.stringify(exportContent);
     const peekContent = exportContent.blocks ? exportContent.blocks[0].text : '';
 
-    console.log(exportContent)
-
     const newNoteList = {
       ...noteList,
       [id]: {
@@ -60,6 +58,24 @@ function App() {
     return noteList[id];
   };
 
+  const addNoteHandler = () => {
+    const newNote = {
+      id: parseInt(Math.random() * 100000),
+      title: "New Note",
+      content: null,
+      peekContent: '',
+    }
+
+    console.log(newNote)
+
+    const newNoteList = {
+      ...noteList,
+      [newNote.id]: newNote,
+    };
+
+    setNoteList(newNoteList)
+  }
+
 
   return (
     <Container>
@@ -67,6 +83,7 @@ function App() {
         currentId={currentId}
         setIdHandler={setCurrentId}
         notes={noteList}
+        addNoteHandler={addNoteHandler}
       />
       <NoteEditorContainer
         id={currentId}

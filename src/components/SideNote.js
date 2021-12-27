@@ -2,10 +2,12 @@ import styled from "styled-components";
 
 
 const Container = styled.div`
-    height: 60px;
+    height: 80px;
     border-bottom: 1px solid #eee;
     cursor: pointer;
     background-color: #ffffff;
+    padding: 8px;
+    box-sizing: border-box;
 
 
     &:hover {
@@ -17,13 +19,25 @@ const Container = styled.div`
     }
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.35rem;
       margin: 0;
+      height: 37px;
+      line-height: 37px;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow : ellipsis;
+      white-space : nowrap;
     }
 
     p {
-      font-size: 1.2rem;
+      font-size: 0.9rem;
       margin: 0;
+      height: 27px;
+      /* line-height: 27px; */
+      color: #444;
+      overflow: hidden;
+      text-overflow : ellipsis;
+      white-space : nowrap;
     }
 `;
 

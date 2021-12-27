@@ -71,11 +71,13 @@ const ToolButton = styled.span`
 
 const Title = styled.input`
   border: 1px none #000;
+  height: 54px;
   border-bottom: 1px solid #eee;
   border-radius: 0;
   font-size: 2rem;
   padding: 8px 0;
   font-weight: 600;
+  box-sizing: border-box;
   
 
   &:focus, &:active, &:enabled {
