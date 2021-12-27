@@ -10,7 +10,8 @@ const Container = styled.div`
     
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    flex-grow: 0;
+    margin: 16px 0 0 16px;
 
     .code-block {
       background-color: rgba(0, 0, 0, 0.05);
@@ -18,6 +19,13 @@ const Container = styled.div`
       border-radius: 4px;
       font-size: 16px;
       padding: 8px 4px;
+    }
+
+    .RichEditor-editor {
+      
+      /* display: flex; */
+      height: calc(100vh - 54px - 54px - 16px - 8px);
+      overflow-y: scroll;
     }
 
 `;
@@ -28,9 +36,8 @@ const ToolRow = styled.div`
     gap: 16px;
 `;
 
-
 const ToolContainer = styled.div`
-    height: 40px;
+    margin: 12px 0;
     display:flex;
 `;
 
@@ -62,13 +69,29 @@ const ToolButton = styled.span`
 
 `;
 
+const Title = styled.input`
+  border: 1px none #000;
+  border-bottom: 1px solid #eee;
+  border-radius: 0;
+  font-size: 2rem;
+  padding: 8px 0;
+  font-weight: 600;
+  
+
+  &:focus, &:active, &:enabled {
+    outline: none;
+  }
+
+`;
+
 const StyledEditor = styled.div`
-flex-grow: 1;
-    /* background-color: #ddd; */
+    flex-grow: 1;
     border-top: 1px solid #eee;
     line-height: 1.5;
     padding-top: 8px;
 `;
+
+
 
 class RichEditor extends Component {
   constructor(props) {
@@ -77,12 +100,14 @@ class RichEditor extends Component {
     this.editorRef = createRef();
 
 
-    const { onLoadHandler, id, } = this.props;
+    const { data, id, } = this.props;
 
-    const rawContent = onLoadHandler(id);
-    const editorState = (rawContent) ? EditorState.createWithContent(convertFromRaw(rawContent)) : EditorState.createEmpty();
+    const title = data.title;
 
-    this.state = { editorState, };
+    const content = JSON.parse(data.content);
+    const editorState = (content) ? EditorState.createWithContent(convertFromRaw(content)) : EditorState.createEmpty();
+
+    this.state = { editorState, title, };
 
 
 
@@ -93,12 +118,16 @@ class RichEditor extends Component {
     this.mapKeyToEditorCommand = this._mapKeyToEditorCommand.bind(this);
     this.toggleBlockType = this._toggleBlockType.bind(this);
     this.toggleInlineStyle = this._toggleInlineStyle.bind(this);
+    this.save = this._save.bind(this);
 
-
+    this.changeTitle = (title) => {
+      this.setState({ title });
+      this.props.onTitleUpdateHandler(this.props.id, title)
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    
+
     if (prevProps.id !== this.props.id) {
 
       //儲存前一次的內容
@@ -106,12 +135,11 @@ class RichEditor extends Component {
         this.props.onSaveHandler(prevProps.id, this.getExportContent(prevState.editorState.getCurrentContent()))
       }
 
-      const { onLoadHandler, id, } = this.props;
+      const title = this.props.data.title;
+      this.setState({ title, });
 
-      console.log(id);
-
-      const rawContent = onLoadHandler(id);
-      const newContent = rawContent ? EditorState.createWithContent(convertFromRaw(rawContent)) : EditorState.createEmpty();
+      const content = JSON.parse(this.props.data.content);
+      const newContent = content ? EditorState.createWithContent(convertFromRaw(content)) : EditorState.createEmpty();
       this.onChange(newContent);
 
     }
@@ -170,8 +198,9 @@ class RichEditor extends Component {
     onSaveHandler(id, this.getExportContent())
   }
 
+
   render() {
-    const { onSaveHandler, onLoadHandler, content, id, } = this.props;
+    const { onSaveHandler, data, id, } = this.props;
     const { editorState } = this.state;
 
     // console.log(id);
@@ -179,16 +208,19 @@ class RichEditor extends Component {
 
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
-    let className = 'RichEditor-editor';
+    let className = 'RichEditor-editor ';
     var contentState = editorState.getCurrentContent();
     if (!contentState.hasText()) {
       if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-        className += ' RichEditor-hidePlaceholder';
+        className += 'RichEditor-hidePlaceholder ';
       }
     }
 
     return (
-      <Container className="RichEditor-root">
+      <Container className='RichEditor-root'>
+
+        <Title type='input' value={this.state.title} onChange={(e) => this.changeTitle(e.target.value)} />
+
         <ToolRow>
           <BlockStyleControls
             editorState={editorState}
@@ -199,11 +231,12 @@ class RichEditor extends Component {
             onToggle={this.toggleInlineStyle}
           />
           <ToolContainer>
-            <ToolButton className='' onMouseDown={() => this._save()}>
+            <ToolButton className='' onMouseDown={this.save}>
               <img src={`./icons/save.svg`} />
             </ToolButton>
           </ToolContainer>
         </ToolRow>
+
         <StyledEditor className={className} onClick={this.focus}>
           <Editor
             blockStyleFn={getBlockStyle}
@@ -212,7 +245,7 @@ class RichEditor extends Component {
             handleKeyCommand={this.handleKeyCommand}
             keyBindingFn={this.mapKeyToEditorCommand}
             onChange={this.onChange}
-            placeholder="寫些東西..."
+            placeholder='寫些東西...'
             ref={this.editorRef}
             spellCheck={true}
             id={this.props.id}

@@ -7,17 +7,21 @@ const Container = styled.div`
     border-right: 1px solid #000;
 `;
 
-
 function SideBox(props) {
 
-  const { setIdHandler, list, } = props;
+  const { currentId, setIdHandler, notes, } = props;
 
 
   return (
     <Container>
       <p>SideBox</p>
       {
-        list.map((el, index) => (<SideNote key={el.title} {...el} onClick={() => setIdHandler(el.id)} />))
+        Object.entries(notes).map(([key, value]) => (<SideNote
+          className={key === currentId ? 'selected' : ''}
+          key={value.title}
+          {...value}
+          onClick={() => setIdHandler(key)}
+        />))
       }
     </Container>
   );

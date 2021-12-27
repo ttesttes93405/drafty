@@ -16,50 +16,63 @@ const Container = styled.div`
 
 function App() {
 
-  const [noteList, setNoteList] = useState([
-    { id: "A", title: "AAA", content: null, },
-    { id: "B", title: "BBB", content: null, },
-  ]);
+  const [noteList, setNoteList] = useState({
+    "A": { id: "A", title: "AAA", content: null, peekContent: '', order: 0, },
+    "B": { id: "B", title: "BBB", content: null, peekContent: '', order: 1, },
+  });
 
-  const [currentId, setCurrentId] = useState(noteList[0].id);
-
-
-  useEffect(() => {
-    console.log(JSON.stringify(noteList, null, 2));
-  }, [noteList,]);
+  const [currentId, setCurrentId] = useState(noteList['A'].id);
 
   const onSaveHandler = (id, exportContent) => {
     // console.log(`save [${id}] = ${JSON.stringify(exportContent, null, 2)}`);
 
     const content = JSON.stringify(exportContent);
+    const peekContent = exportContent.blocks ? exportContent.blocks[0].text : '';
 
-    const newNoteList = noteList.map(el => {
-      if (el.id === id) {
-        return {
-          ...el,
-          content,
-        };
+    console.log(exportContent)
+
+    const newNoteList = {
+      ...noteList,
+      [id]: {
+        ...noteList[id],
+        content,
+        peekContent
       }
-      return el;
-    })
+    };
 
     setNoteList(newNoteList);
 
 
   };
 
+  const onTitleUpdateHandler = (id, title) => {
+    const newNoteList = {
+      ...noteList,
+      [id]: {
+        ...noteList[id],
+        title,
+      }
+    }
+    setNoteList(newNoteList);
+  }
+
   const onLoadHandler = (id) => {
-    return JSON.parse(noteList.find(el => el.id === id).content);
+    return noteList[id];
   };
 
 
   return (
     <Container>
-      <SideBox setIdHandler={setCurrentId} list={noteList} />
+      <SideBox
+        currentId={currentId}
+        setIdHandler={setCurrentId}
+        notes={noteList}
+      />
       <NoteEditorContainer
         id={currentId}
         onSaveHandler={onSaveHandler}
         onLoadHandler={onLoadHandler}
+        onTitleUpdateHandler={onTitleUpdateHandler}
       />
     </Container>
   );

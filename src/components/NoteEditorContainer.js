@@ -7,22 +7,24 @@ const Container = styled.div`
     display: flex;
     flex-grow: 1;
     flex-direction: column;
-    padding: 16px;
+    max-height: 100vh;
+    overflow-y: hidden;
 `;
 
 
 function NoteEditorContainer(props) {
 
-  const { id, onSaveHandler, onLoadHandler, } = props;
+  const { id, onSaveHandler, onLoadHandler, onTitleUpdateHandler, } = props;
 
+  const data = onLoadHandler(id);
 
   return (
     <Container>
-      <p>NoteEditorContainer #{id}</p>
       <RichEditor
         id={id}
         onSaveHandler={onSaveHandler}
-        onLoadHandler={onLoadHandler}
+        onTitleUpdateHandler={onTitleUpdateHandler}
+        data={data}
       />
     </Container>
   );
