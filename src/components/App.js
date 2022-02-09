@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import NoteEditorContainer from "./NoteEditorContainer";
 import SideBox from "./SideBox";
-
+import '../index.css';
 
 const Container = styled.div`
   display: flex;
@@ -21,8 +21,8 @@ function App() {
   };
 
   const [noteList, setNoteList] = useState({
-    0: { id: 0, title: "AAA", content: null, peekContent: '', order: 0, isFavorite: false, },
-    1: { id: 1, title: "BBB", content: null, peekContent: '', order: 1, isFavorite: false, },
+    0: { id: 0, title: "學習指南：React 介紹", content: null, peekContent: '', order: 0, isFavorite: false, },
+    1: { id: 1, title: "React Conf 2021 Recap", content: null, peekContent: '', order: 1, isFavorite: false, },
   });
 
   const [currentId, setCurrentId] = useState(getAliveNoteIds()[0]);

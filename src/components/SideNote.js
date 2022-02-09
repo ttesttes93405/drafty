@@ -8,6 +8,7 @@ const Container = styled.div`
     cursor: pointer;
     background-color: #ffffff;
     padding: 8px;
+    padding-left: 16px;
     box-sizing: border-box;
     position: relative;
 
@@ -21,26 +22,32 @@ const Container = styled.div`
     }
 
     h1 {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       margin: 0;
+      margin-right: 8px;
       height: 37px;
       line-height: 37px;
       font-weight: 500;
       overflow: hidden;
       text-overflow : ellipsis;
       white-space : nowrap;
+      flex-grow: 1;
+      color: #111;
     }
 
     p {
       font-size: 0.9rem;
       margin: 0;
+      margin-right: 8px;
       height: 27px;
       /* line-height: 27px; */
-      color: #444;
+      color: #888;
       overflow: hidden;
       text-overflow : ellipsis;
       white-space : nowrap;
+
     }
+
 
 `;
 
@@ -58,9 +65,15 @@ const ToolMenuButton = styled.button`
   align-items: center;
   justify-content: center;
   outline: none;
+  flex-shrink: 0;
 
   &:hover, &.dropdown {
     background-color: #d8d8d8;
+  }
+
+  
+  &:hover img{
+    opacity: 1;
   }
 
   img {
@@ -68,25 +81,21 @@ const ToolMenuButton = styled.button`
     width: 16px;
     padding: 0;
     margin: 0;
-    opacity: 0.5;
-    
-    &:hover {
-      opacity: 1;
-    }
+    opacity: 0.5;    
   }
 
 `;
 
 const ToolMenu = styled.div`
   
-  position: absolute;
+  /* position: absolute;
   top: 8px;
-  right: 8px;
+  right: 8px; */
 
   .rc-menu {
     position: absolute;
-    top: 38px;
-    right: 0;
+    top: 46px;
+    right: 8px;
     width: 160px;
     border: rgba(0,0,0,0.1) solid 1px;
     background-color: #fff;
@@ -104,7 +113,20 @@ const ToolMenu = styled.div`
     border-radius: 4px;
     list-style-type: none;
     line-height: 36px;
-    padding: 0 4px;
+    padding: 0 4px 0 8px;
+    display: flex;
+    align-items: center;
+
+    span {
+      flex-grow: 1;
+    }
+
+    img {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      margin-right: 8px; 
+    }
 
     &:last-child {
       margin: 4px;
@@ -122,6 +144,14 @@ const ToolMenu = styled.div`
       background-color: #ffe2e0;
     }
   }
+
+`;
+
+const TitleRow = styled.div`
+  
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
 `;
 
@@ -159,43 +189,55 @@ function SideNote(props) {
     {
       name: 'Star',
       action: () => { onToggleFavoriteHandler(id); },
+      icon: './icons/star.svg',
     },
     {
       name: 'Delete',
       action: () => { removeNoteHandler(id); },
       className: 'danger',
+      icon: './icons/trash3-fill.svg',
     },
   ]
 
 
-  const toolMenu = (
-    <ToolMenu>
-      <ToolMenuButton className={dropdown ? 'dropdown' : ''} onClick={(e) => {
-        e.nativeEvent.stopPropagation();
-        setDropdown(!dropdown);
-      }}>
-        <img src='./icons/three-dots.svg' />
-      </ToolMenuButton>
+  const toolMenuButton = (<ToolMenu>
+    <ToolMenuButton className={dropdown ? 'dropdown' : ''} onClick={(e) => {
+      setDropdown(!dropdown);
+      e.nativeEvent.stopPropagation();
+    }}>
+      <img src='./icons/three-dots.svg' />
+    </ToolMenuButton>
 
-      {dropdown && (<Menu onClick={(e) => {
-        e.domEvent.stopPropagation();
-        setDropdown(false);
-      }}>
-        {
-          menuItems.map(item => (<MenuItem key={item.name} onClick={item.action} className={item.className} itemIcon={item.icon}>
-            {item.name}
-          </MenuItem>))
-        }
-      </Menu>)}
+    {dropdown && (<Menu onClick={(e) => {
+      setDropdown(false);
+      e.domEvent.stopPropagation();
+    }}>
+      {
+        menuItems.map(item => (<MenuItem key={item.name} onClick={item.action} className={item.className}>
+          <span>{item.name}</span>
+          {item.icon && (<img src={item.icon} />)}
+        </MenuItem>))
+      }
+    </Menu>)}
 
-    </ToolMenu>
-  );
+  </ToolMenu>);
+
+  const favoriteButton = (<ToolMenuButton onClick={(e) => {
+    onToggleFavoriteHandler(id);
+    e.domEvent.stopPropagation();
+  }}>
+    <img className="favorite" src={`./icons/${isFavorite ? 'star-fill' : 'star'}.svg`} />
+  </ToolMenuButton>);
 
   return (
     <Container onClick={onClick} className={className}>
-      <h1>{title}{isFavorite?'(<3)':''}</h1>
+      <TitleRow>
+        <h1>{title}</h1>
+
+        {favoriteButton}
+        {toolMenuButton}
+      </TitleRow>
       <p>{peekContent}</p>
-      {toolMenu}
     </Container >
   );
 }

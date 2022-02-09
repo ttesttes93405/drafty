@@ -26,26 +26,41 @@ const Container = styled.div`
     position: relative;
     display: flex;
     flex-direction: column;
-    /* flex-grow: 1; */
     flex-shrink: 1;
     margin: 0;
     padding: 0;
     align-items: stretch;
     width: 700px;
 
-    .code-block {
-      background-color: rgba(0, 0, 0, 0.05);
-      font-family: "Inconsolata", "Menlo", "Consolas", monospace;
-      border-radius: 4px;
-      font-size: 16px;
-      padding: 0;
-    }
+    .DraftEditor-editorContainer {
+      font-size: 1.05rem;
+      color: #222;
+      line-height: 1.8rem;
 
-    .RichEditor-editor {
-      
-      /* display: flex; */
-      /* height: calc(100vh - 54px - 54px - 16px - 8px);
-      overflow-y: scroll; */
+      .code-block {
+        background-color: rgba(0, 0, 0, 0.05);
+        font-family: "Inconsolata", "Menlo", "Consolas", monospace;
+        border-radius: 6px;
+        font-size: 16px;
+        padding: 6px;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        color: #000;
+      }
+
+      h1 {
+        margin: 16px 0 12px;
+      }
+
+      h2 {
+        margin: 12px 0 8px;
+      }
+
+      h3 {
+        margin: 8px 0 4px;
+      }
+
     }
 
 `;
@@ -99,7 +114,7 @@ const Title = styled.input`
   padding: 8px 0;
   font-weight: 600;
   box-sizing: border-box;
-  
+  width: 100%;
 
   &:focus, &:active, &:enabled {
     outline: none;
@@ -302,7 +317,19 @@ const styleMap = {
     fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
     borderRadius: 4,
     fontSize: 16,
-    padding: 2,
+    padding: 4,
+  },
+  H1: {
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  H2: {
+    marginTop: 12,
+    marginBottom: 12,
+  },
+  H3: {
+    marginTop: 8,
+    marginBottom: 8,
   },
 };
 
