@@ -33,7 +33,7 @@ const AddButton = styled.button`
 
 
   &:hover {
-  background-color: #ddd;
+    background-color: #ddd;
   }
 
   img {
@@ -51,7 +51,14 @@ const NoteList = styled.div`
 
 function SideBox(props) {
 
-  const { currentId, setIdHandler, notes, addNoteHandler, } = props;
+  const {
+    currentId,
+    setIdHandler,
+    notes,
+    addNoteHandler,
+    removeNoteHandler,
+    onToggleFavoriteHandler,
+  } = props;
 
 
   return (
@@ -61,9 +68,11 @@ function SideBox(props) {
         {
           Object.entries(notes).map(([key, value]) => (<SideNote
             className={key === currentId ? 'selected' : ''}
-            key={value.title}
+            key={value.id}
             {...value}
             onClick={() => setIdHandler(key)}
+            removeNoteHandler={removeNoteHandler}
+            onToggleFavoriteHandler={onToggleFavoriteHandler}
           />))
         }
       </NoteList>

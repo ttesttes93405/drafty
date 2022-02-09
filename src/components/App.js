@@ -16,15 +16,25 @@ const Container = styled.div`
 
 function App() {
 
+  const getAliveNoteIds = () => {
+    return Object.keys(noteList);
+  };
+
   const [noteList, setNoteList] = useState({
-    "A": { id: "A", title: "AAA", content: null, peekContent: '', order: 0, },
-    "B": { id: "B", title: "BBB", content: null, peekContent: '', order: 1, },
+    0: { id: 0, title: "AAA", content: null, peekContent: '', order: 0, isFavorite: false, },
+    1: { id: 1, title: "BBB", content: null, peekContent: '', order: 1, isFavorite: false, },
   });
 
-  const [currentId, setCurrentId] = useState(noteList['A'].id);
+  const [currentId, setCurrentId] = useState(getAliveNoteIds()[0]);
 
   const onSaveHandler = (id, exportContent) => {
     // console.log(`save [${id}] = ${JSON.stringify(exportContent, null, 2)}`);
+
+    if (!noteList[id]) {
+
+      console.log(`無 ${id} Note，不予儲存`);
+      return;
+    }
 
     const content = JSON.stringify(exportContent);
     const peekContent = exportContent.blocks ? exportContent.blocks[0].text : '';
@@ -39,7 +49,6 @@ function App() {
     };
 
     setNoteList(newNoteList);
-
 
   };
 
@@ -58,15 +67,37 @@ function App() {
     return noteList[id];
   };
 
+  const onToggleFavoriteHandler = (id) => {
+    const targetNote = noteList[id];
+    if (!targetNote) {
+      return;
+    }
+
+    const newNote = {
+      ...targetNote,
+      isFavorite: !(targetNote.isFavorite || false),
+    }
+    
+    // console.log(newNote);
+
+    const newNoteList = {
+      ...noteList,
+      [id]: newNote,
+    };
+    
+    // console.log(newNoteList)
+
+    setNoteList(newNoteList);
+
+  }
+
   const addNoteHandler = () => {
     const newNote = {
-      id: parseInt(Math.random() * 100000),
+      id: Math.max(...Object.values(noteList).map(e => e.id)) + 1,
       title: "New Note",
       content: null,
       peekContent: '',
     }
-
-    console.log(newNote)
 
     const newNoteList = {
       ...noteList,
@@ -76,6 +107,19 @@ function App() {
     setNoteList(newNoteList)
   }
 
+  const removeNoteHandler = (id) => {
+
+    if (currentId === id) {
+      const changeId = getAliveNoteIds().filter(n => n !== id)[0];  //先拿到隨便一個存在ID
+      console.log(changeId)
+      setCurrentId(changeId);
+    }
+
+    const newNoteList = { ...noteList };
+    delete newNoteList[id];
+
+    setNoteList(newNoteList)
+  }
 
   return (
     <Container>
@@ -84,6 +128,8 @@ function App() {
         setIdHandler={setCurrentId}
         notes={noteList}
         addNoteHandler={addNoteHandler}
+        removeNoteHandler={removeNoteHandler}
+        onToggleFavoriteHandler={onToggleFavoriteHandler}
       />
       <NoteEditorContainer
         id={currentId}

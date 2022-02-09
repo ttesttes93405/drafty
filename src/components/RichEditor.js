@@ -6,39 +6,61 @@ import 'draft-js/dist/Draft.css';
 
 
 
-const Container = styled.div`
+
+const Wrapper = styled.div`
     
     display: flex;
     flex-direction: column;
     flex-grow: 0;
-    margin: 16px 0 0 16px;
+    margin: 0;
+    padding: 0 0 100px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    align-items: center;
+
+
+`;
+
+const Container = styled.div`
+    
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* flex-grow: 1; */
+    flex-shrink: 1;
+    margin: 0;
+    padding: 0;
+    align-items: stretch;
+    width: 700px;
 
     .code-block {
       background-color: rgba(0, 0, 0, 0.05);
       font-family: "Inconsolata", "Menlo", "Consolas", monospace;
       border-radius: 4px;
       font-size: 16px;
-      padding: 8px 4px;
+      padding: 0;
     }
 
     .RichEditor-editor {
       
       /* display: flex; */
-      height: calc(100vh - 54px - 54px - 16px - 8px);
-      overflow-y: scroll;
+      /* height: calc(100vh - 54px - 54px - 16px - 8px);
+      overflow-y: scroll; */
     }
 
 `;
 
 const ToolRow = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  background-color: #fff;
+  border-top: 1px solid #eee;
 `;
 
 const ToolContainer = styled.div`
     margin: 12px 0;
-    display:flex;
+    display: flex;
 `;
 
 const ToolButton = styled.span`
@@ -72,7 +94,6 @@ const ToolButton = styled.span`
 const Title = styled.input`
   border: 1px none #000;
   height: 54px;
-  border-bottom: 1px solid #eee;
   border-radius: 0;
   font-size: 2rem;
   padding: 8px 0;
@@ -88,9 +109,18 @@ const Title = styled.input`
 
 const StyledEditor = styled.div`
     flex-grow: 1;
-    border-top: 1px solid #eee;
     line-height: 1.5;
     padding-top: 8px;
+    margin-top: 16px;
+`;
+
+const HeadContainer = styled.div`
+  position: sticky;
+  z-index: 10;
+  /* border: #000 1px solid; */
+  top: 0;
+  background-color: #fff;
+  padding: 32px 0 0 0;
 `;
 
 
@@ -131,6 +161,8 @@ class RichEditor extends Component {
   componentDidUpdate(prevProps, prevState) {
 
     if (prevProps.id !== this.props.id) {
+
+      // console.log(this.props.data)
 
       //儲存前一次的內容
       if (prevState.editorState) {
@@ -219,41 +251,46 @@ class RichEditor extends Component {
     }
 
     return (
-      <Container className='RichEditor-root'>
+      <Wrapper>
+        <Container className='RichEditor-root'>
 
-        <Title type='input' value={this.state.title} onChange={(e) => this.changeTitle(e.target.value)} />
+          <HeadContainer>
+            <Title type='input' value={this.state.title} onChange={(e) => this.changeTitle(e.target.value)} />
 
-        <ToolRow>
-          <BlockStyleControls
-            editorState={editorState}
-            onToggle={this.toggleBlockType}
-          />
-          <InlineStyleControls
-            editorState={editorState}
-            onToggle={this.toggleInlineStyle}
-          />
-          <ToolContainer>
-            <ToolButton className='' onMouseDown={this.save}>
-              <img src={`./icons/save.svg`} />
-            </ToolButton>
-          </ToolContainer>
-        </ToolRow>
+            <ToolRow>
+              <BlockStyleControls
+                editorState={editorState}
+                onToggle={this.toggleBlockType}
+              />
+              <InlineStyleControls
+                editorState={editorState}
+                onToggle={this.toggleInlineStyle}
+              />
+              <ToolContainer>
+                <ToolButton className='' onMouseDown={this.save}>
+                  <img src={`./icons/save.svg`} />
+                </ToolButton>
+              </ToolContainer>
+            </ToolRow>
+          </HeadContainer>
 
-        <StyledEditor className={className} onClick={this.focus}>
-          <Editor
-            blockStyleFn={getBlockStyle}
-            customStyleMap={styleMap}
-            editorState={editorState}
-            handleKeyCommand={this.handleKeyCommand}
-            keyBindingFn={this.mapKeyToEditorCommand}
-            onChange={this.onChange}
-            placeholder='寫些東西...'
-            ref={this.editorRef}
-            spellCheck={true}
-            id={this.props.id}
-          />
-        </StyledEditor>
-      </Container>
+          <StyledEditor className={className} onClick={this.focus}>
+            <Editor
+              blockStyleFn={getBlockStyle}
+              customStyleMap={styleMap}
+              editorState={editorState}
+              handleKeyCommand={this.handleKeyCommand}
+              keyBindingFn={this.mapKeyToEditorCommand}
+              onChange={this.onChange}
+              placeholder='寫些東西...'
+              ref={this.editorRef}
+              spellCheck={true}
+              id={this.props.id}
+            />
+          </StyledEditor>
+
+        </Container>
+      </Wrapper>
     );
   }
 }
