@@ -12,7 +12,14 @@ const Container = styled.div`
 
 `;
 
-const defaultNote = { id: '0', title: '學習指南：React 介紹', content: null, peekContent: '', order: 0, isFavorite: false, };
+const defaultNote = {
+  id: '0',
+  title: "Let's Drafty!",
+  content: "{\"blocks\":[{\"key\":\"1b35v\",\"text\":\"Hello !\",\"type\":\"header-one\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"bhspe\",\"text\":\"試試在這裡寫些東西，或是新增筆記\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"6vfji\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"doklg\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"fe72g\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+  peekContent: "Hello !",
+  order: 0,
+  isFavorite: false,
+};
 
 function App() {
 

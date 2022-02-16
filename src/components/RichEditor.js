@@ -70,7 +70,8 @@ const ToolRow = styled.div`
   flex-direction: row;
   gap: 16px;
   background-color: #fff;
-  border-top: 1px solid #eee;
+  border-style: none;
+  border-bottom: 1px solid #eee;
 `;
 
 const ToolContainer = styled.div`
@@ -107,7 +108,7 @@ const ToolButton = styled.span`
 `;
 
 const Title = styled.input`
-  border: 1px none #000;
+  border-style: none;
   height: 54px;
   border-radius: 0;
   font-size: 2rem;
@@ -115,9 +116,14 @@ const Title = styled.input`
   font-weight: 600;
   box-sizing: border-box;
   width: 100%;
+  border-radius: 8px;
 
   &:focus, &:active, &:enabled {
     outline: none;
+  }
+
+  &:hover {
+    background-color: #f4f4f4;
   }
 
 `;
@@ -252,7 +258,7 @@ class RichEditor extends Component {
 
   render() {
     const { onSaveHandler, data, id, } = this.props;
-    
+
     const { editorState } = this.state;
 
     // console.log(id);
