@@ -12,39 +12,50 @@ const Container = styled.div`
 
 `;
 
+const defaultNote = { id: '0', title: '學習指南：React 介紹', content: null, peekContent: '', order: 0, isFavorite: false, };
 
 function App() {
 
   const [noteList, setNoteList] = useState({
-    0: { id: '0', title: '學習指南：React 介紹', content: null, peekContent: '', order: 0, isFavorite: false, },
+    0: defaultNote,
   });
 
   useEffect(() => {
 
+    const fetchIdsData = localStorage.getItem('__noteList__');
+
+    if (fetchIdsData === null) {
+      //完全新的狀況
+      storageNote(defaultNote);
+    }
+
     const idsData = localStorage.getItem('__noteList__');
+    const ids = JSON.parse(idsData);
+    if (ids) {
+      const loadNoteList = {};
 
-    if (idsData !== null) {
-      const ids = JSON.parse(idsData);
-      if (ids) {
-        const loadNoteList = {};
+      ids.forEach(id => {
+        const noteData = localStorage.getItem(`note:${id}`);
+        const note = JSON.parse(noteData);
+        loadNoteList[note.id] = note;
+      });
 
-        ids.forEach(id => {
-          const noteData = localStorage.getItem(`note:${id}`);
-          const note = JSON.parse(noteData);
-          loadNoteList[note.id] = note;
-        });
+      setNoteList(loadNoteList);
+      setCurrentId(ids[0]);
 
-        setNoteList(loadNoteList);
-
-        console.log(loadNoteList);
-      }
+      console.log(loadNoteList);
     }
 
   }, []);
 
-  const [currentId, setCurrentId] = useState(Object.keys(noteList)[0]);
+  const [currentId, setCurrentId] = useState('');
 
   const storageNote = (note) => {
+
+    if (note.id === '') {
+      return;
+    }
+
     localStorage.setItem(`note:${note.id}`, JSON.stringify(note));
 
     const noteIdList = Object.keys(noteList);
@@ -52,6 +63,11 @@ function App() {
   }
 
   const removeStorageNote = (id) => {
+
+    if (id === '') {
+      return;
+    }
+
     localStorage.removeItem(`note:${id}`);
 
     const noteIdList = Object.keys(noteList).filter(k => k !== id);

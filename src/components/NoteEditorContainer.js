@@ -21,12 +21,12 @@ function NoteEditorContainer(props) {
 
   return (
     <Container>
-      <RichEditor
+      {id !== '' && (<RichEditor
         id={id}
         onSaveHandler={onSaveHandler}
         onTitleUpdateHandler={onTitleUpdateHandler}
         data={data}
-      />
+      />)}
     </Container>
   );
 }
