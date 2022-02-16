@@ -15,7 +15,7 @@ const Container = styled.div`
 const defaultNote = {
   id: '0',
   title: "Let's Drafty!",
-  content: "{\"blocks\":[{\"key\":\"1b35v\",\"text\":\"Hello !\",\"type\":\"header-one\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"bhspe\",\"text\":\"試試在這裡寫些東西，或是新增筆記\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"6vfji\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"doklg\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"fe72g\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+  content: "{\"blocks\":[{\"key\":\"1b35v\",\"text\":\"Hello !\",\"type\":\"header-one\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"desgh\",\"text\":\"Drafty 是個輕量化的文字編輯器\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"bhspe\",\"text\":\"試試在這裡寫些東西，或是新增筆記\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"offset\":5,\"length\":4,\"style\":\"BOLD\"},{\"offset\":12,\"length\":4,\"style\":\"BOLD\"}],\"entityRanges\":[],\"data\":{}},{\"key\":\"6vfji\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"doklg\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"fe72g\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
   peekContent: "Hello !",
   order: 0,
   isFavorite: false,
@@ -50,7 +50,6 @@ function App() {
       setNoteList(loadNoteList);
       setCurrentId(ids[0]);
 
-      console.log(loadNoteList);
     }
 
   }, []);
@@ -180,6 +179,10 @@ function App() {
 
     setNoteList(newNoteList);
     removeStorageNote(id);
+
+    if (Object.keys(noteList).length === 0) {
+      storageNote(defaultNote);
+    }
 
   }
 

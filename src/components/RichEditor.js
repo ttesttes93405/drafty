@@ -152,15 +152,12 @@ class RichEditor extends Component {
 
     this.editorRef = createRef();
 
-
     const { data, id, } = this.props;
 
     const title = data.title;
 
     const content = JSON.parse(data.content);
     const editorState = (content) ? EditorState.createWithContent(convertFromRaw(content)) : EditorState.createEmpty();
-
-    console.log(props.data)
 
     this.state = { editorState, title, };
 
