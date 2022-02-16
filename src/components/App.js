@@ -13,19 +13,51 @@ const Container = styled.div`
 `;
 
 
-
 function App() {
-
-  const getAliveNoteIds = () => {
-    return Object.keys(noteList);
-  };
 
   const [noteList, setNoteList] = useState({
     0: { id: '0', title: '學習指南：React 介紹', content: null, peekContent: '', order: 0, isFavorite: false, },
-    1: { id: '1', title: 'React Conf 2021 Recap', content: null, peekContent: '', order: 1, isFavorite: false, },
   });
 
-  const [currentId, setCurrentId] = useState(getAliveNoteIds()[0]);
+  useEffect(() => {
+
+    const idsData = localStorage.getItem('__noteList__');
+
+    if (idsData !== null) {
+      const ids = JSON.parse(idsData);
+      if (ids) {
+        const loadNoteList = {};
+
+        ids.forEach(id => {
+          const noteData = localStorage.getItem(`note:${id}`);
+          const note = JSON.parse(noteData);
+          loadNoteList[note.id] = note;
+        });
+
+        setNoteList(loadNoteList);
+
+        console.log(loadNoteList);
+      }
+    }
+
+  }, []);
+
+  const [currentId, setCurrentId] = useState(Object.keys(noteList)[0]);
+
+  const storageNote = (note) => {
+    localStorage.setItem(`note:${note.id}`, JSON.stringify(note));
+
+    const noteIdList = Object.keys(noteList);
+    localStorage.setItem('__noteList__', JSON.stringify(noteIdList));
+  }
+
+  const removeStorageNote = (id) => {
+    localStorage.removeItem(`note:${id}`);
+
+    const noteIdList = Object.keys(noteList).filter(k => k !== id);
+    localStorage.setItem('__noteList__', JSON.stringify(noteIdList));
+  }
+
 
   const onSaveHandler = (id, exportContent) => {
     // console.log(`save [${id}] = ${JSON.stringify(exportContent, null, 2)}`);
@@ -39,28 +71,35 @@ function App() {
     const content = JSON.stringify(exportContent);
     const peekContent = exportContent.blocks ? exportContent.blocks[0].text : '';
 
+    const newNote = {
+      ...noteList[id],
+      content,
+      peekContent
+    };
+
     const newNoteList = {
       ...noteList,
-      [id]: {
-        ...noteList[id],
-        content,
-        peekContent
-      }
+      [id]: newNote,
     };
 
     setNoteList(newNoteList);
+    storageNote(newNote);
 
   };
 
   const onTitleUpdateHandler = (id, title) => {
+
+    const newNote = {
+      ...noteList[id],
+      title,
+    };
+
     const newNoteList = {
       ...noteList,
-      [id]: {
-        ...noteList[id],
-        title,
-      }
+      [id]: newNote,
     }
     setNoteList(newNoteList);
+    storageNote(newNote);
   }
 
   const onLoadHandler = (id) => {
@@ -88,6 +127,7 @@ function App() {
     // console.log(newNoteList)
 
     setNoteList(newNoteList);
+    storageNote(newNote);
 
   }
 
@@ -105,6 +145,7 @@ function App() {
     };
 
     setNoteList(newNoteList)
+    storageNote(newNote);
     setCurrentId(newNote.id);
 
   }
@@ -115,6 +156,7 @@ function App() {
     delete newNoteList[id];
 
     setNoteList(newNoteList);
+    removeStorageNote(id);
 
   }
 

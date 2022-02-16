@@ -12,9 +12,10 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
-    height: 70px;
+    /* height: 70px; */
     border-bottom: 1px solid #eee;
     flex-shrink: 0;
+    flex-direction: row;
 `;
 
 const Space = styled.div`
@@ -72,16 +73,27 @@ const ToolMenuButton = styled.button`
   }
 
   
-  &:hover img{
+  &:hover .icon, &:hover .sub-icon{
     opacity: 1;
   }
 
-  img {
+  .icon {
     height: 16px;
     width: 16px;
     padding: 0;
     margin: 0;
     opacity: 0.5;    
+  }
+
+  .sub-icon {
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    height: 12px;
+    width: 12px;
+    padding: 0;
+    margin: 0;
+    opacity: 0.25;    
   }
 
 `;
@@ -91,14 +103,22 @@ const ToolMenu = styled.div`
   position: relative;
 
   display: flex;
-  justify-content: flex-end;
-  /* align-items: flex-end; */
+  justify-content: center;
+  align-items: center;
+
   padding: 4px 8px;
 
+  p{
+    display: inline-block;
+    margin: 0;
+    flex-grow: 1;
+    font-size: 1.25rem;
+    height: 24px;
+  }
 
   .rc-menu {
     position: absolute;
-    top: 46px;
+    top: 42px;
     right: 8px;
     width: 160px;
     border: rgba(0,0,0,0.1) solid 1px;
@@ -140,6 +160,10 @@ const ToolMenu = styled.div`
     &.danger {
       color: #ff3f34;
     }
+
+    &.selected {
+      background-color: #e8e8e8;
+    }
   }
 
   .rc-menu-item-active {
@@ -152,14 +176,23 @@ const ToolMenu = styled.div`
 
 `;
 
-const TitleRow = styled.div`
+const EmptyDisplayContainer = styled.div`
   
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+  height: 120px;
+  background-color: #f8f8f8;
+  margin: 16px;
+  border-radius: 16px;
+
+  p {
+    color: #888;
+    font-size: 0.85rem;
+  }
 
 `;
-
 
 
 function SideBox(props) {
@@ -179,30 +212,36 @@ function SideBox(props) {
 
   const filterMenuItems = [
     {
-      name: 'All',
+      name: '所有筆記',
       action: () => { setfilterMode(0) },
-      icon: './icons/list-ul.svg',
+      icon: './icons/funnel.svg',
+      emptyDisplayTip: '沒有筆記，請先新增筆記',
     },
     {
-      name: 'Favorite',
+      name: '標記星號',
       action: () => { setfilterMode(1) },
       icon: './icons/star.svg',
+      emptyDisplayTip: '目前沒有標記星號的筆記',
     },
   ];
 
-  const filterMenuButton = (<ToolMenu>
+  const headerContainer = (<ToolMenu>
+
+    <p>DRAFTY</p>
+
     <ToolMenuButton className={dropdown ? 'dropdown' : ''} onClick={(e) => {
       setDropdown(!dropdown);
       e.nativeEvent.stopPropagation();
     }}>
-      <img src={filterMenuItems[filterMode].icon} />
+      <img className='icon' src={filterMenuItems[filterMode].icon} />
+      {filterMode === 0 || <img className='sub-icon' src='./icons/funnel.svg' />}
     </ToolMenuButton>
 
     {dropdown && (<Menu onClick={(e) => {
       setDropdown(false);
     }}>
       {
-        filterMenuItems.map(item => (<MenuItem key={item.name} onClick={item.action} className={item.className}>
+        filterMenuItems.map((item, index) => (<MenuItem key={item.name} onClick={item.action} className={filterMode === index ? 'selected' : ''}>
           <span>{item.name}</span>
           {item.icon && (<img src={item.icon} />)}
         </MenuItem>))
@@ -233,10 +272,17 @@ function SideBox(props) {
       return true;
     });
 
+  const emptyDisplay = (displayNotes.length === 0 && (
+    <EmptyDisplayContainer>
+      <p>{filterMenuItems[filterMode].emptyDisplayTip}</p>
+    </EmptyDisplayContainer>
+  ));
+
   return (
     <Container>
-      <Header>DRAFTY</Header>
-      {filterMenuButton}
+      <Header>
+        {headerContainer}
+      </Header>
       <NoteList>
         {
           displayNotes.map(([key, value]) => (<SideNote
@@ -248,6 +294,7 @@ function SideBox(props) {
             onToggleFavoriteHandler={onToggleFavoriteHandler}
           />))
         }
+        {emptyDisplay}
       </NoteList>
       <AddButton onClick={addNoteHandler}>
         <img src={`/icons/plus-circle.svg`} />

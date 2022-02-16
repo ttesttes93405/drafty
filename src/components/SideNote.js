@@ -179,12 +179,12 @@ function SideNote(props) {
 
   const menuItems = [
     {
-      name: 'Star',
+      name: '標記星號',
       action: () => { onToggleFavoriteHandler(id); },
       icon: './icons/star.svg',
     },
     {
-      name: 'Delete',
+      name: '刪除筆記',
       action: () => { removeNoteHandler(id); },
       className: 'danger',
       icon: './icons/trash3-fill.svg',
