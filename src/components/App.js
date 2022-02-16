@@ -21,8 +21,8 @@ function App() {
   };
 
   const [noteList, setNoteList] = useState({
-    0: { id: 0, title: "學習指南：React 介紹", content: null, peekContent: '', order: 0, isFavorite: false, },
-    1: { id: 1, title: "React Conf 2021 Recap", content: null, peekContent: '', order: 1, isFavorite: false, },
+    0: { id: '0', title: '學習指南：React 介紹', content: null, peekContent: '', order: 0, isFavorite: false, },
+    1: { id: '1', title: 'React Conf 2021 Recap', content: null, peekContent: '', order: 1, isFavorite: false, },
   });
 
   const [currentId, setCurrentId] = useState(getAliveNoteIds()[0]);
@@ -77,14 +77,14 @@ function App() {
       ...targetNote,
       isFavorite: !(targetNote.isFavorite || false),
     }
-    
+
     // console.log(newNote);
 
     const newNoteList = {
       ...noteList,
       [id]: newNote,
     };
-    
+
     // console.log(newNoteList)
 
     setNoteList(newNoteList);
@@ -93,7 +93,7 @@ function App() {
 
   const addNoteHandler = () => {
     const newNote = {
-      id: Math.max(...Object.values(noteList).map(e => e.id)) + 1,
+      id: (Math.max(...Object.values(noteList).map(e => Number(e.id))) + 1).toString(),
       title: "New Note",
       content: null,
       peekContent: '',
@@ -105,20 +105,17 @@ function App() {
     };
 
     setNoteList(newNoteList)
+    setCurrentId(newNote.id);
+
   }
 
   const removeNoteHandler = (id) => {
 
-    if (currentId === id) {
-      const changeId = getAliveNoteIds().filter(n => n !== id)[0];  //先拿到隨便一個存在ID
-      console.log(changeId)
-      setCurrentId(changeId);
-    }
-
     const newNoteList = { ...noteList };
     delete newNoteList[id];
 
-    setNoteList(newNoteList)
+    setNoteList(newNoteList);
+
   }
 
   return (

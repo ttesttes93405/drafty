@@ -88,10 +88,6 @@ const ToolMenuButton = styled.button`
 
 const ToolMenu = styled.div`
   
-  /* position: absolute;
-  top: 8px;
-  right: 8px; */
-
   .rc-menu {
     position: absolute;
     top: 46px;
@@ -116,6 +112,7 @@ const ToolMenu = styled.div`
     padding: 0 4px 0 8px;
     display: flex;
     align-items: center;
+    cursor: pointer;
 
     span {
       flex-grow: 1;
@@ -172,11 +169,6 @@ function SideNote(props) {
 
   const [dropdown, setDropdown] = useState(false);
 
-  const handleClickOutside = (e) => {
-    console.log(e)
-    setDropdown(false);
-  };
-
   // useEffect(() => {
   //   document.addEventListener("mousedown", handleClickOutside);
   //   return () => {
@@ -197,7 +189,9 @@ function SideNote(props) {
       className: 'danger',
       icon: './icons/trash3-fill.svg',
     },
-  ]
+  ];
+
+
 
 
   const toolMenuButton = (<ToolMenu>
@@ -210,7 +204,7 @@ function SideNote(props) {
 
     {dropdown && (<Menu onClick={(e) => {
       setDropdown(false);
-      e.domEvent.stopPropagation();
+      // e.domEvent.stopPropagation();
     }}>
       {
         menuItems.map(item => (<MenuItem key={item.name} onClick={item.action} className={item.className}>
@@ -224,7 +218,7 @@ function SideNote(props) {
 
   const favoriteButton = (<ToolMenuButton onClick={(e) => {
     onToggleFavoriteHandler(id);
-    e.domEvent.stopPropagation();
+    e.stopPropagation();
   }}>
     <img className="favorite" src={`./icons/${isFavorite ? 'star-fill' : 'star'}.svg`} />
   </ToolMenuButton>);
@@ -233,7 +227,6 @@ function SideNote(props) {
     <Container onClick={onClick} className={className}>
       <TitleRow>
         <h1>{title}</h1>
-
         {favoriteButton}
         {toolMenuButton}
       </TitleRow>
