@@ -208,7 +208,8 @@ function SideBox(props) {
 
 
   const [filterMode, setfilterMode] = useState(0);
-  const [dropdown, setDropdown] = useState(false);
+  const [filterModeDropdown, setFilterModeDropdown] = useState(false);
+  const [displayMode, setDisplayMode] = useState(0);
 
   const filterMenuItems = [
     {
@@ -225,28 +226,53 @@ function SideBox(props) {
     },
   ];
 
+  const displayItems = [
+    {
+      title: '卡片模式',
+      icon: './icons/layout-split.svg',
+    },
+    {
+      title: '條列模式',
+      icon: './icons/layout-three-columns.svg',
+    },
+  ];
+
   const headerContainer = (<ToolMenu>
 
     <p>DRAFTY</p>
 
-    <ToolMenuButton className={dropdown ? 'dropdown' : ''} onClick={(e) => {
-      setDropdown(!dropdown);
+    <ToolMenuButton onClick={(e) => {
+      const newDisplayMode = (displayMode + 1) % displayItems.length;
+      setDisplayMode(newDisplayMode)
+      e.nativeEvent.stopPropagation();
+    }}>
+      <img className='icon' src={displayItems[displayMode].icon} title={displayItems[displayMode].title} />
+    </ToolMenuButton>
+
+    <ToolMenuButton className={filterModeDropdown ? 'dropdown' : ''} onClick={(e) => {
+      setFilterModeDropdown(!filterModeDropdown);
       e.nativeEvent.stopPropagation();
     }}>
       <img className='icon' src={filterMenuItems[filterMode].icon} />
       {filterMode === 0 || <img className='sub-icon' src='./icons/funnel.svg' />}
     </ToolMenuButton>
 
-    {dropdown && (<Menu onClick={(e) => {
-      setDropdown(false);
+    {filterModeDropdown && (<Menu onClick={(e) => {
+      setFilterModeDropdown(false);
     }}>
       {
-        filterMenuItems.map((item, index) => (<MenuItem key={item.name} onClick={item.action} className={filterMode === index ? 'selected' : ''}>
-          <span>{item.name}</span>
-          {item.icon && (<img src={item.icon} />)}
-        </MenuItem>))
+        filterMenuItems.map((item, index) => (
+          <MenuItem
+            key={item.name}
+            onClick={item.action}
+            className={filterMode === index ? 'selected' : ''}
+          >
+            <span>{item.name}</span>
+            {item.icon && (<img src={item.icon} />)}
+          </MenuItem>))
       }
     </Menu>)}
+
   </ToolMenu>);
 
 
@@ -290,6 +316,7 @@ function SideBox(props) {
             key={value.id}
             {...value}
             onClick={() => setIdHandler(key)}
+            displayMode={displayMode}
             removeNoteHandler={removeNoteHandler}
             onToggleFavoriteHandler={onToggleFavoriteHandler}
           />))

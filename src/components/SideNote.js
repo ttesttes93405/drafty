@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Menu, { SubMenu, MenuItem } from 'rc-menu';
+import classNames from "classnames";
 
 const Container = styled.div`
     height: 80px;
-    border-bottom: 1px solid #eee;
     cursor: pointer;
     background-color: #ffffff;
     padding: 8px;
     padding-left: 16px;
     box-sizing: border-box;
     position: relative;
+    margin: 0;
+    border-bottom: 1px solid #eee;
 
 
     &:hover {
@@ -20,6 +22,16 @@ const Container = styled.div`
     &.selected {
       background-color: #eeeeee;
     }
+
+    /* &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -3px;
+      height: 1px;
+      background-color: #eee;
+    } */
 
     h1 {
       font-size: 1.25rem;
@@ -48,6 +60,21 @@ const Container = styled.div`
 
     }
 
+    &.display-1 {
+      height: 46px;
+      padding: 4px 8px;
+      border-radius: 0;
+      margin: 0;
+
+
+      h1 {
+        font-size: 1rem;
+      }
+
+      p {
+        display: none;
+      }
+    }
 
 `;
 
@@ -165,6 +192,7 @@ function SideNote(props) {
     className,
     removeNoteHandler,
     onToggleFavoriteHandler,
+    displayMode,
   } = props;
 
   const [dropdown, setDropdown] = useState(false);
@@ -224,7 +252,7 @@ function SideNote(props) {
   </ToolMenuButton>);
 
   return (
-    <Container onClick={onClick} className={className}>
+    <Container onClick={onClick} className={classNames(className, `display-${displayMode}`)}>
       <TitleRow>
         <h1>{title}</h1>
         {favoriteButton}
