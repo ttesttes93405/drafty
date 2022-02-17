@@ -9,6 +9,18 @@ const Container = styled.div`
     flex-direction: column;
     width: 400px;
     border-right: 1px solid #bbb;
+
+    .icon {
+      height: 32px;
+      width: 32px;
+    }
+
+    .title {
+      font-size: 1rem;
+      height: 20px;
+      color: #444;
+    }
+
 `;
 
 const Header = styled.div`
@@ -239,7 +251,8 @@ function SideBox(props) {
 
   const headerContainer = (<ToolMenu>
 
-    <p>DRAFTY</p>
+    <img src='./draftyx128.png' className='icon' />
+    <p className='title'>DRAFTY</p>
 
     <ToolMenuButton onClick={(e) => {
       const newDisplayMode = (displayMode + 1) % displayItems.length;
