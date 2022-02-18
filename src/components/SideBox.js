@@ -21,6 +21,15 @@ const Container = styled.div`
       color: #444;
     }
 
+    @media (max-width: 1200px) {
+      width: 30vw;
+    }
+
+    @media (max-width: 767px) {
+      width: 70vw;
+    }
+
+
 `;
 
 const Header = styled.div`

@@ -9,6 +9,12 @@ const Container = styled.div`
   flex-direction: row;
   width: 100%;
   height: 100vh;  
+  overflow-x: hidden;
+
+  @media (max-width: 767px) {
+    width: 170vw;
+    margin-left: -70vw;
+  }
 
 `;
 

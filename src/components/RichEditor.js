@@ -9,14 +9,14 @@ import 'draft-js/dist/Draft.css';
 
 const Wrapper = styled.div`
     
-    display: flex;
-    flex-direction: column;
-    flex-grow: 0;
-    margin: 0;
-    padding: 0 0 100px 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0;
+  margin: 0;
+  padding: 0 0 100px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-items: center;
 
 
 `;
@@ -31,6 +31,16 @@ const Container = styled.div`
     padding: 0;
     align-items: stretch;
     width: 700px;
+
+    @media (max-width: 1200px) {
+      width: calc(100vw - 30vw - 40px);
+    }
+
+    @media (max-width: 767px) {
+      width: calc(100vw - 20px);
+    }
+
+
 
     .DraftEditor-editorContainer {
       font-size: 1.05rem;
@@ -67,16 +77,18 @@ const Container = styled.div`
 
 const ToolRow = styled.div`
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
-  gap: 16px;
+  gap: 0 12px;
+  padding: 10px 0;
   background-color: #fff;
   border-style: none;
   border-bottom: 1px solid #eee;
 `;
 
 const ToolContainer = styled.div`
-    margin: 12px 0;
-    display: flex;
+  margin: 2px 0;
+  display: flex;
 `;
 
 const ToolButton = styled.span`

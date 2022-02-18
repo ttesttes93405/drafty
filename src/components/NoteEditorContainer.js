@@ -10,6 +10,11 @@ const Container = styled.div`
   flex-direction: column;
   max-height: 100vh;
   overflow-y: hidden;
+
+  @media (max-width: 767px) {
+    width: 100vw;
+  }
+
 `;
 
 const EmptyContainer = styled.div`
